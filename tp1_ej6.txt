@@ -1,0 +1,159 @@
+        org 1000h
+  num1a db 4
+  num2a db 3
+  resa  db 0
+
+  num1b db 5
+  num2b db 6
+  resb  db 0
+
+  num1c db 5
+  num2c db 6
+  resc  db 0
+
+  num1d dw 3
+  num2d dw 6
+  resd  dw 0
+
+  num1e db 5
+  num2e db 3
+  rese  db 0
+        org 2000h
+        ;Inicio a)
+        mov dl,num1a
+        mov dh,num2a
+        mov ah,0  
+        call mayor_min_db
+   fora:add ah,dl
+        dec dh
+        jnz fora
+        mov resa,ah
+        ;Fin a)
+        
+        ;Inicio b)
+        mov dl,num1b
+        mov dh,num2b
+        call mulb
+        mov resb,ah
+        ;Fin b)
+        
+        ;Inicio c)
+        mov bx,offset num1c
+        mov cx,offset num2c
+        call mulc
+        mov resc,ah
+        ;Fin c)
+        
+        ;Inicio d)
+        mov cx,num1d
+        push cx   
+        mov cx,num2d  ;Deberia hacer push cx dentro de la subrutina
+        push cx       ;o fuera
+        call muld
+        pop cx
+        pop cx
+        mov resd,ax
+        ;Fin d)
+
+        ;Inicio e)
+        mov cx,offset num1e
+        push cx
+        mov cx,offset num2e
+        push cx
+        call mule
+        pop cx
+        pop cx
+        mov rese,ah
+        ;Fin e)
+        
+        hlt
+        
+        org 3000h
+mayor_min_db: 
+        cmp dl,dh
+        js si_db
+        jmp no_db
+  si_db:xor dl,dh
+        xor dh,dl
+        xor dl,dh
+  no_db:ret   
+
+mayor_min_dw: 
+        cmp dx,bx
+        js si_dw
+        jmp no_dw
+  si_dw:xor dx,bx
+        xor bx,dx
+        xor dx,bx
+  no_dw:ret 
+  
+  mulb: push cx
+        push dx
+        mov ah,0
+        call mayor_min_db
+   forb:add ah,dl
+        dec dh
+        jnz forb
+        pop dx
+        pop cx
+        ret
+
+  mulc: push bx
+        push cx
+        push dx
+        mov dl,[bx]
+        mov bx,cx
+        mov dh,[bx]
+        mov ah,0
+        call mayor_min_db
+   forc:add ah,dl
+        dec dh
+        jnz forc 
+        pop dx
+        pop cx
+        pop bx
+        ret
+
+  
+  muld: mov ax,0
+        push bx
+        push cx
+        push dx
+        mov bx,sp
+        add bx,8 ;mover el stack pointer para el pop dx y pop bx
+        mov dx,[bx]
+        add bx,2
+        mov bx,[bx]
+        call mayor_min_dw
+   ford:add ax,dx
+        dec bx
+        jnz ford 
+        pop dx
+        pop cx
+        pop bx
+        ret
+
+  mule: mov ah,0
+        push bx
+        push cx
+        push dx
+        mov bx,sp
+        add bx,8
+        mov dx,bx
+        mov cx,[bx] ;Paso dir de num
+        mov bx,cx
+        mov cx,dx
+        mov dl,[bx] ;Accedo a num
+        mov bx,cx
+        add bx,2 ;Dir sig num
+        mov bx,[bx]
+        mov dh,[bx]
+        call mayor_min_db
+   fore:add ah,dl
+        dec dh
+        jnz fore 
+        pop dx
+        pop cx
+        pop bx
+        ret
+        end
