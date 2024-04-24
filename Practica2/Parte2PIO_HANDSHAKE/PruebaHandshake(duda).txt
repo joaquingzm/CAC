@@ -1,0 +1,22 @@
+        hand equ 40h
+        org 1000h
+        str db "hola"
+        fin db ?
+        org 2000h
+        mov cl,offset fin - offset str
+        mov bx,offset str
+        mov al,0
+        out hand+1,al
+for:
+        mov al,[bx]
+        out hand,al ;Reg datos
+        ;Es necesario chequear estado de busy?
+        ;si lo borro anda igual
+while:  in al,hand+1
+        cmp al,0
+        jnz while
+        inc bx
+        dec cl
+        jnz for
+        hlt
+        end

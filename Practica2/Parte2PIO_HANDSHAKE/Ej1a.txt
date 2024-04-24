@@ -1,0 +1,11 @@
+     pio equ 30h
+      org 2000h
+      mov al,0  
+      out pio+3,al;cb
+      out pio+1,al;pb
+loop: mov al,11000011b
+      out pio+1,al
+      mov al,0
+      out pio+1,al
+      jmp loop
+      end

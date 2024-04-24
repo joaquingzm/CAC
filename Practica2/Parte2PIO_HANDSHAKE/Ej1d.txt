@@ -1,0 +1,43 @@
+        pic equ 20h ;EOI
+        timer equ 10h
+        pio equ 30h
+        posVInt equ 11
+        ;Posicion donde ir a buscar dir de la subrutina de interrupcion
+        
+        org 44
+        ;En la pos 10 del vector de interrupciones pongo direccion a gestor
+        dirSubRutInt dw SubRutInt
+
+        org 1000h
+
+        org 2000h
+        mov al,0
+        mov ah,0 ;Inicializo contador en 0
+        out pio+3,al ;Seteo PB en salida
+        
+        cli ;Deshabilito interrupciones
+        mov al,1
+        out timer+1,al ;Pongo cmp en 1
+        mov al,0fdh
+        out pic+1,al ;Habilito interrupciones de INT1 (A donde esta conectado timer)
+        mov al,posVint
+        out pic+5,al ;Pongo en INT1 donde buscar la rut de interrupcion
+        mov al,0
+        out timer,al ;Seteo contador en 0
+        sti ;Habilito interrupciones
+loop:   jmp loop ;Loop infinito donde espero a interrupciones por parte del timer
+        org 3000h
+SubRutInt:
+        mov al,ah
+        out pio+1,al
+        inc ah
+        cmp ah,0ffh
+        jnz seguir
+        mov ah,0
+seguir: mov al,20h
+        out pic,al
+        mov al,0
+        out timer,al
+        iret
+        end
+        

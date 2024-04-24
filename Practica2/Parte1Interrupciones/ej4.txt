@@ -6,24 +6,31 @@
                 y db '0'
 
                 org 3000h
+                ;deberian pasarse las variables por pila
 imprimir:       push ax
                 push bx
                 push cx
                 push dx
-                mov al, 1
-                mov bx, offset y
-                int 7               
-bucle:          mov al,1
-                int 7
-                inc byte ptr [bx]
-                push bx
+bucle:          mov al, 1
+                mov bx, offset y  
+                int 7 ;imprimo y,1er digito
+                mov bx, offset x
+                mov al,1 
+                int 7 ;imprimo x,2do digito
+                push bx ;guardo dir de x
                 mov bx, offset string
                 mov al, offset fin - offset string
                 int 7
                 mov bx,offset n
                 mov al, 1
                 int 7
-                pop bx
+                pop bx ;recupero dir de x
+                inc byte ptr [bx]
+                cmp byte ptr [bx],'9'+1
+                jnz bucle
+                mov byte ptr [bx],'0'
+                mov bx, offset y ;recupero dir de y
+                inc byte ptr [bx]
                 cmp byte ptr [bx],'9'+1
                 jnz bucle
                 pop dx
