@@ -1,0 +1,36 @@
+        PIO EQU 30H
+        
+        ORG 1000H
+        STRING DB "ORGANIZACION Y ARQUITECTURA DE COMPUTADORAS"
+        FIN DB 10
+        ORG 2000H
+        ;SETEO PIO
+        MOV AL,1
+        OUT PIO+2,AL
+        ;SETEO DE PA
+        MOV AL,0
+        OUT PIO+3,AL
+        ;SETEO DE PB
+
+        MOV CL, OFFSET FIN - OFFSET STRING
+        MOV BX, OFFSET STRING
+BUCLE2: MOV AL,[BX]
+        OUT PIO+1,AL
+        
+        MOV AL,0
+        OUT PIO,AL
+        ;S=0
+        ;S= XB,MOV,S,10B = 2 
+        MOV AL,2
+        OUT PIO,AL
+        ;S=1
+        ;0->1
+    BUCLE:IN AL,PIO
+        AND AL,00000001B
+        JNZ BUCLE
+        
+        INC BX
+        DEC CL
+        JNZ BUCLE2
+        HLT
+        END
