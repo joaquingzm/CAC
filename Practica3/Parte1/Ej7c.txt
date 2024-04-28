@@ -1,0 +1,58 @@
+        HANDSHAKE EQU 40H
+        POS_GESTOR_H EQU 4
+        PIC EQU 20H
+        POS_GESTOR_F10 EQU 5
+        ORG 16
+        DW GESTOR_H
+        ORG 20
+        DW GESTOR_F10
+        
+        ORG 3000H
+GESTOR_F10:
+        IN AL,PIC+1
+        XOR AL,00000100B
+        OUT PIC+1,AL
+        MOV CL,0
+        MOV AL,20H
+        OUT PIC+1,AL
+        IRET
+GESTOR_H:
+        DEC CL
+        JNZ SEGUIR
+        IN AL,PIC+1
+        XOR AL,00000100B
+        OUT PIC+1,AL
+SEGUIR: MOV AL,[BX]
+        INC BX
+        OUT HANDSHAKE,AL
+        MOV AL,20H
+        OUT PIC,AL
+        IRET
+        
+        ORG 1000H
+        STRING DB ?
+
+        ORG 2000H
+        CLI
+        MOV AL,POS_GESTOR_H
+        OUT PIC+6,AL ;ASIGNO POS DEL VECTOR DE INTERRUPCIONES A INT2
+        MOV AL,POS_GESTOR_F10
+        OUT PIC+4,AL
+        MOV AL,11111010B
+        OUT PIC+1,AL ;HABILITO INT2 E INT0
+        MOV AL,10000000B
+        OUT HANDSHAKE+1,AL ;HABILITO INTERRUPCIONES DESDE HANDSHAKE
+        MOV BX,OFFSET STRING
+        PUSH BX
+        MOV CL,2
+FOR1:   INT 6
+        INC BX
+        DEC CL
+        JNZ FOR1
+        MOV CL,2
+        POP BX
+        STI
+FOR2:   CMP CL,0
+        JNZ FOR2
+        HLT
+        END

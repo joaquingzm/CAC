@@ -1,0 +1,31 @@
+        PIO EQU 30H
+        PIC EQU 20H
+        POS_GESTOR_F10 EQU 4
+        ORG 16
+        DW GESTOR_F10
+
+        ORG 3000H
+GESTOR_F10:
+        NOT AL
+        PUSH AX
+        OUT PIO+1,AL
+        MOV AL,20H
+        OUT PIC,AL
+        POP AX
+        IRET
+
+        ORG 2000H
+        CLI
+        ;SETEO PIC
+        MOV AL,11111110B
+        OUT PIC+1,AL
+        MOV AL,POS_GESTOR_F10
+        OUT PIC+4,AL
+        ;SETEO PIO
+        MOV AL,0
+        OUT PIO+3,AL
+        MOV AL,0
+        OUT PIO+1,AL
+        STI
+LOOP:   JMP LOOP
+        END

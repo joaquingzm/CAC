@@ -1,0 +1,34 @@
+        PIC EQU 20H
+        POS_GESTOR_F10 EQU 10
+        ORG 40
+        DIR_GESTOR_F10 DW GESTOR_F10
+        ORG 1000H
+        STRING DB "Vamos las interrupciones!"
+        LF DB 10
+        FIN DB ?
+        ORG 3000H
+GESTOR_F10:
+        OUT PIC+1,AL
+        MOV AL,CL
+        INT 7
+        MOV AL,20H
+        OUT PIC,AL
+        DEC CH
+        JNZ  SEGUIR
+        MOV AL,0FFH
+        OUT PIC+1,AL
+        HLT
+SEGUIR: IRET
+        ORG 2000H
+        CLI
+        MOV CH,5
+        MOV BX,OFFSET STRING
+        MOV CL,OFFSET FIN - OFFSET STRING
+        MOV AL,POS_GESTOR_F10
+        OUT PIC+4,AL
+        MOV AL,11111110B
+        OUT PIC+1,AL
+        STI
+BUCLE:  
+        JMP BUCLE
+        END

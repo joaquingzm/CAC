@@ -1,0 +1,23 @@
+Dirección 	Registro 	Función 			Valor de Ejemplo
+20h 	  	EOI      	1)				No aplica
+21h 		IMR 		2)				1111 1101
+22h 		IRR 		3)				0000 0100
+23h 		ISR 		4)				0000 0011
+24h 		INT 0 		5)				15
+25h 		INT 1 		6)				10
+26h 		INT 2 		7)				25
+
+
+1) Indica que se terminó de gestionar la interrupción que estaba siendo atendida.
+2) Indica qué interrupciones son ignoradas por el procesador y cuales no. Cada bit
+corresponde a cada registro de interrupciones, si el bit está en 1 significa que la
+interrupción está enmascarada y por lo tanto no será atendida mientras que si el bit
+se encuentra en 0 la interrupción correspondiente será atendida.
+3) Cada bit del registro corresponde a cada registro de interrupción. Si una interrupción
+fue solicitada ya sea que la interrupción esté enmascarada o no, el bit correspondiente a
+esa interrupción se pone en 1.
+4) Indica con un bit en 1 qué interrupción está siendo atendida en ese momento. Cuando
+el registro EOI se carga con el valor 20h el bit pasa a valer 0.
+5,6,7) Registros que almacenan la posición del vector de interrupciones 
+dónde se encuentra la dirección al gestor correspondiente a la interrupción asociada al 
+dispositivo conectado a ese registro.

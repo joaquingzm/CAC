@@ -1,0 +1,38 @@
+        PIC EQU 20H
+        TIMER EQU 10H
+        POS_GESTOR_TIMER EQU 10
+        ORG 40
+        DIR_GESTOR_TIMER DW GESTOR_TIMER
+        ORG 1000H
+        STRING DB "Vamos las interrupciones!"
+        LF DB 10
+        FIN DB ?
+        ORG 3000H
+GESTOR_TIMER:
+        DEC CH
+        MOV AL,0FFH
+        OUT PIC+1,AL
+        MOV AL,CL
+        INT 7
+        MOV AL,20H
+        OUT PIC,AL
+        IRET
+        ORG 2000H
+        CLI
+        MOV AL,10
+        OUT TIMER+1,AL
+        MOV AL,11111101B
+        OUT PIC+1,AL
+        MOV AL,POS_GESTOR_TIMER
+        OUT PIC+5,AL
+        MOV BX,OFFSET STRING
+        MOV CL,OFFSET FIN - OFFSET STRING
+        MOV CH,1
+        MOV AL,0
+        OUT TIMER,AL
+        STI
+BUCLE:
+        CMP CH,0
+        JNZ BUCLE
+        HLT
+        END

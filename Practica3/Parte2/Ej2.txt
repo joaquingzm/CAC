@@ -1,0 +1,33 @@
+        PIC EQU 20H
+        POS_GESTOR_F10 EQU 4
+        ORG 16
+        DW GESTOR_F10
+
+        ORG 1000H
+        CHAR DB ?
+        ORG 3000H
+GESTOR_F10:
+        MOV CHAR,AH
+        MOV BX,OFFSET CHAR
+        MOV AL,1
+        INT 7
+        MOV AL,20H
+        OUT PIC,AL
+        HLT
+        IRET
+        ORG 2000H
+        CLI
+        ;SETEO PIC
+        MOV AL,11111110B
+        OUT PIC+1,AL
+        MOV AL,POS_GESTOR_F10
+        OUT PIC+4,AL
+
+        MOV AH,'0'
+        STI
+LOOP:   INC AH
+        CMP AH,'9'
+        JNZ LOOP
+        MOV AH,'0'
+        JMP LOOP
+        END

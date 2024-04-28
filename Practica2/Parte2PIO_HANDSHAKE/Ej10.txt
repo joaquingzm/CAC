@@ -1,0 +1,26 @@
+        HANDSHAKE EQU 40H
+        ORG 1000H
+        STRING DB "INGENIERIA E INFORMATICA"
+        FIN DB ?
+
+        ORG 2000H
+        MOV BX,OFFSET STRING
+        MOV CL,OFFSET FIN - OFFSET STRING
+BUCLE:  MOV AL,[BX]
+        OUT HANDSHAKE,AL
+BUSY:   IN AL,HANDSHAKE+1
+        AND AL,00000001B
+        JNZ BUSY
+        INC BX
+        DEC CL
+        JNZ BUCLE
+        HLT
+        END
+
+;a/b) Diferencias con ejercicio anterior:
+; Ventajas: No es necesario marcar flanco ascendente para que la impresora
+;tome el dato a imprimir, cada vez que se actualiza el registro
+;el módulo Handshake se encarga de hacerlo
+; Desventajas: El módulo pierde la capacidad de ser de proposito
+;general, solamente sirve para la impresora, a diferencia del módulo
+;PIO el cual permite trabajar con luces,llaves e impresora.

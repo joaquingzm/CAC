@@ -1,0 +1,61 @@
+        PIO EQU 30H
+        PIC EQU 20H
+        POS_GESTOR_F10 EQU 5
+        ;Posición del gestor de interrupciones asociado a F10 dentro del vector de interrupciones
+        ORG 20
+        DIR_GESTOR_F10 DW GESTOR_F10
+        ORG 3000H
+GESTOR_F10:
+        CALL IMPRIMIR_VECTOR
+        MOV AL,20H
+        OUT PIC,AL
+        HLT
+        IRET
+        
+IMPRIMIR_VECTOR:
+        SUB BX,CX
+        ;SETEO BX EN EL PRINCIPIO DEL VECTOR
+BUCLE_AUN_CHARS:        
+        MOV AL,[BX]
+        OUT PIO+1,AL
+        MOV AL,0
+        OUT PIO,AL
+        MOV AL,2
+        OUT PIO,AL
+BUCLE_AUN_BUSY:
+        IN AL,PIO
+        AND AL,00000001B
+        JNZ BUCLE_AUN_BUSY
+        INC BX
+        DEC CL
+        JNZ BUCLE_AUN_CHARS
+        RET
+        ORG 1000H
+        V_CHARS DB ?
+        ORG 2000H
+        ;SETEO GESTOR PARA INT0(F10)
+        MOV AL,POS_GESTOR_F10
+        OUT PIC+4,AL
+        ;HABILITO INT0
+        MOV AL,11111110B
+        OUT PIC+1,AL
+        ;SETEO PIO
+        ;SETEO DE PA
+        MOV AL,1
+        OUT PIO+2,AL
+        ;SETEO DE PB
+        MOV AL,0
+        OUT PIO+3,AL
+
+        MOV BX,OFFSET V_CHARS
+        MOV CX,0
+        
+BUCLE:  CLI
+        INT 6
+        ;IN AL,PIC+2
+        ;AND AL,1
+        INC CX
+        INC BX
+        STI
+        JMP BUCLE
+        END

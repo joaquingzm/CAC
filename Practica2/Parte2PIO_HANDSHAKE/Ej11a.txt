@@ -1,0 +1,44 @@
+        TIMER EQU 10H
+        PIC EQU 20H
+        PIO EQU 30H
+        POS_GESTOR_TIMER EQU 10
+        ORG 40
+        DIR_GESTOR_TIMER DW GESTOR_TIMER
+        ORG 3000H
+GESTOR_TIMER:
+        MOV AL,[BX]
+        OUT PIO+1,AL
+        MOV AL,0
+        OUT PIO,AL
+        MOV AL,2
+        OUT PIO,AL
+        INC BX
+        DEC CL
+        MOV AL,20H
+        OUT PIC,AL
+        MOV AL,0
+        OUT TIMER,AL
+        IRET
+        ORG 1000H
+        STRING DB "UNLP"
+        FIN DB ?
+        ORG 2000H
+        CLI
+        MOV AL,0
+        OUT PIO+3,AL ;Seteo PB en salida
+        MOV AL,1
+        OUT PIO+2,AL ;Seteo PA para leer BUSY y escribir STROBE
+        MOV AL,1111101B
+        OUT PIC+1,AL ;Habilito INT0(TIMER)
+        MOV AL,POS_GESTOR_TIMER
+        OUT PIC+5,AL ;Indico pos del gestor en el vector de interrupciones
+        MOV AL,10
+        OUT TIMER+1,AL ;Pongo cmp en 10
+        MOV BX,OFFSET STRING
+        MOV CL,OFFSET FIN - OFFSET STRING
+        STI
+
+BUCLE:  CMP CL,0
+        JNZ BUCLE
+        HLT
+        END

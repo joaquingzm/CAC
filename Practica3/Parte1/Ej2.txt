@@ -1,0 +1,9 @@
+Dispositivos 		IMR 		INT 0	 	INT 1	 	INT 2	 	Dirección Vector
+F10 			1111 1110 	5 		No importa 	No importa 	20
+F10 			1111 1110	8		No importa	No importa	32
+Timer			1111 1101 	No importa	10		No importa	40
+HANDSHAKE y F10 	1111 1010	5               No importa 	20    		20 y 80 
+No importa		1111 1111       No importa	No importa	No importa	No importa
+F10 y Timer 		1111 1100	10 		20		No importa	40 y 80
+Handshake y Timer	1111 1001 	No importa	4		8		16 y 32
+H,T y F10		1111 1000 	5 		10 		15		20,40 y 60

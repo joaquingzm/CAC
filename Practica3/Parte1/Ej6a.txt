@@ -1,0 +1,63 @@
+        PIC EQU 20H
+        TIMER EQU 10H
+        POS_GESTOR_F10 EQU 4
+        POS_GESTOR_TIMER EQU 12
+        ORG 16
+        DIR_GESTOR_F10 DW GESTOR_F10
+        ORG 48
+        DIR_GESTOR_TIMER DW GESTOR_TIMER
+        ORG 1000H
+        STRING DB "N "
+        FIN DB ?
+        CHAR DB ?
+        INICIO DB 0
+        ORG 3000H
+GESTOR_F10:
+        MOV INICIO,0FFH 
+        MOV AL,20H
+        OUT PIC,AL
+        IRET
+GESTOR_TIMER:
+        MOV AL,2
+        MOV [BX],CH
+        INT 7
+        DEC CH ;Decremento en código ASCII para imprimir sig char
+        DEC CL ;Decremento cantidad de chars restantes a imprimir
+        JNZ SEGUIR
+        MOV INICIO,0 ;Indico que terminé de imprimir para salir del loop
+SEGUIR: MOV AL,CL
+        OUT TIMER+1,AL ;Actualizo reg cmp
+        MOV AL,0
+        OUT TIMER,AL ;Muevo cont a 0
+        MOV AL,20H
+        OUT PIC,AL ;Indico a PIC que terminó de gestionarse la int
+        IRET
+        ORG 2000H
+        CLI
+        MOV AL,POS_GESTOR_F10
+        OUT PIC+4,AL
+        MOV AL,11111110B
+        OUT PIC+1,AL
+        MOV BX,OFFSET CHAR
+        STI
+        INT 6
+BUCLE1: CMP INICIO,0
+        JZ BUCLE1
+        CLI
+        MOV AL,11111101B
+        OUT PIC+1,AL
+        MOV AL,POS_GESTOR_TIMER
+        OUT PIC+5,AL
+        MOV BX,OFFSET STRING
+        MOV CH,CHAR
+        MOV CL,CH
+        SUB CL,'0'
+        MOV AL,CL
+        OUT TIMER+1,AL
+        MOV AL,0
+        OUT TIMER,AL
+        STI
+BUCLE2: CMP INICIO,0FFH
+        JZ BUCLE2
+        HLT
+        END

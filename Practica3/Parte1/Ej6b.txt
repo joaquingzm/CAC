@@ -1,0 +1,84 @@
+        PIC EQU 20H
+        TIMER EQU 10H
+        POS_GESTOR_F10_INICIO EQU 4
+        POS_GESTOR_TIMER EQU 5
+        POS_GESTOR_F10_PAUSA EQU 6
+        
+        ORG 16
+        DW GESTOR_F10_INICIO
+        ORG 20
+        DW GESTOR_TIMER
+        ORG 24
+        DW GESTOR_F10_PAUSA
+
+        
+        ORG 1000H
+        STRING DB "9 "
+        FIN DB 0
+        PAUSA DB 0
+        INICIO DB 0
+        
+        ORG 3000H
+GESTOR_F10_INICIO:
+        MOV INICIO,0FFH 
+        MOV AL,20H
+        OUT PIC,AL
+        IRET
+
+GESTOR_F10_PAUSA:
+        NOT PAUSA
+        IN AL,PIC+1
+        XOR AL,00000010B ;Me la pensé y se me ocurrió usar xor para invertir 1 bit
+        OUT PIC+1,AL
+        MOV AL,20H
+        OUT PIC,AL
+        IRET
+        
+GESTOR_TIMER:
+        MOV AL,2
+        INT 7
+        DEC BYTE PTR [BX] ;Decremento en código ASCII para imprimir sig char
+        CMP BYTE PTR [BX],'0'
+        JNS SEGUIR
+        MOV FIN,0FFH
+SEGUIR: MOV AL,0
+        OUT TIMER,AL ;Muevo cont a 0
+        MOV AL,20H
+        OUT PIC,AL ;Indico a PIC que terminó de gestionarse la int
+        IRET
+        
+        ORG 2000H
+        CLI
+        MOV AL,POS_GESTOR_F10_INICIO
+        OUT PIC+4,AL ;Cargo pos del vector asociada a int0
+        MOV AL,11111110B
+        OUT PIC+1,AL ;Habilito int0
+        STI
+        
+BUCLE1: CMP INICIO,0
+        JZ BUCLE1
+
+        
+        CLI
+        MOV AL,11111100B
+        OUT PIC+1,AL ;Habilito int0 e int1 
+        MOV AL,POS_GESTOR_F10_PAUSA
+        OUT PIC+4,AL
+        MOV AL,POS_GESTOR_TIMER
+        OUT PIC+5,AL
+        MOV BX,OFFSET STRING
+        MOV CL,9
+        MOV AL,1
+        OUT TIMER+1,AL
+        MOV AL,0
+        OUT TIMER,AL
+        STI
+        
+BUCLE2: CMP PAUSA,0FFH
+        JZ BUCLE2
+        CMP FIN,0FFH
+        JZ TERMINAR 
+        JMP BUCLE2
+TERMINAR:        
+        HLT
+        END
