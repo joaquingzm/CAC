@@ -1,0 +1,72 @@
+          PIO EQU 30H
+          TIMER EQU 10H
+          PIC EQU 20H
+          TIEMPO EQU 9
+
+          ORG 1000H
+          PATRON DB ?
+
+          ORG 2000H
+
+          HLT
+
+          ORG 3000H
+
+INICIAR_TIMER:
+          PUSH AX
+          PUSH BX
+          PUSH CX
+          PUSH DX
+
+          CLI
+          MOV AL,TIEMPO
+          OUT TIMER+1,AL
+          
+          POP DX
+          POP CX
+          POP BX
+          MOV AL,0
+          OUT TIMER,AL
+          STI ;POR LAS DUDAS ACTIVO INT DEL TIMER AHORA
+          POP AX
+          RET
+          
+INICIAR_PIO:
+          PUSH AX
+          PUSH BX
+          PUSH CX
+          PUSH DX
+
+          POP DX
+          POP CX
+          POP BX
+          POP AX
+          RET
+
+INICIAR_PIC:
+          PUSH AX
+          PUSH BX
+          PUSH CX
+          PUSH DX
+
+          POP DX
+          POP CX
+          POP BX
+          POP AX
+          RET
+          
+GESTOR_TIMER:
+          PUSH AX
+          PUSH BX
+          PUSH CX
+          PUSH DX
+
+          POP DX
+          POP CX
+          POP BX
+          POP AX
+          IRET
+INFORMAR:
+
+
+          end
