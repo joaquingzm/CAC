@@ -2,12 +2,43 @@
           TIMER EQU 10H
           PIC EQU 20H
           TIEMPO EQU 9
+          POS_GESTOR_TIMER EQU 10
+
+          ORG 40
+          DW GESTOR_TIMER
 
           ORG 1000H
           PATRON DB ?
-
+          MSJ_G DB "GANASTE"
+          MSJ_P DB "PERDISTE"
+          FIN DB 0
+          SEGUNDO DB '0'+TIEMPO
           ORG 2000H
 
+          CLI
+          MOV BX,OFFSET SEGUNDO
+          CALL INICIAR_PIO
+          CALL INICIAR_PIC
+          CALL INICIAR_TIMER
+          STI
+          
+      FOR:CLI
+          IN AL,PIO
+          PUSH AX
+          XOR AL,PATRON
+          NOT AL
+          OUT PIO+1,AL
+          POP AX
+          CMP AL,PATRON
+          JZ FIN_FOR
+          STI
+          CMP FIN,0FFH
+          JNZ FOR
+FIN_FOR:
+          MOV CH,AL
+          MOV CL,PATRON
+          CALL INFORMAR
+          
           HLT
 
           ORG 3000H
@@ -19,7 +50,7 @@ INICIAR_TIMER:
           PUSH DX
 
           CLI
-          MOV AL,TIEMPO
+          MOV AL,1
           OUT TIMER+1,AL
           
           POP DX
@@ -37,6 +68,11 @@ INICIAR_PIO:
           PUSH CX
           PUSH DX
 
+          MOV AL,0FFH
+          OUT PIO+2,AL
+          MOV AL,0
+          OUT PIO+3,AL
+
           POP DX
           POP CX
           POP BX
@@ -48,6 +84,11 @@ INICIAR_PIC:
           PUSH BX
           PUSH CX
           PUSH DX
+
+          MOV AL,11111101B
+          OUT PIC+1,AL
+          MOV AL,POS_GESTOR_TIMER
+          OUT PIC+5,AL
 
           POP DX
           POP CX
@@ -61,12 +102,43 @@ GESTOR_TIMER:
           PUSH CX
           PUSH DX
 
+          MOV AL,1
+          INT 7
+          MOV AL,0
+          DEC BYTE PTR [BX]
+          CMP BYTE PTR [BX],'0'
+          JNS SEGUIR_TIMER
+          MOV AL,2
+          MOV FIN,0FFH
+SEGUIR_TIMER:
+          OUT TIMER,AL
+          MOV AL,20H
+          OUT PIC,AL
+          
           POP DX
           POP CX
           POP BX
           POP AX
           IRET
 INFORMAR:
-
+          PUSH AX
+          PUSH BX
+          PUSH CX
+          PUSH DX
+          
+          MOV BX,OFFSET MSJ_P
+          MOV AL,OFFSET FIN - OFFSET MSJ_P
+          CMP CH,CL
+          JNZ PERDISTE
+          MOV BX,OFFSET MSJ_G
+          MOV AL,OFFSET MSJ_P - OFFSET MSJ_G
+  PERDISTE:
+          INT 7
+          
+          POP DX
+          POP CX
+          POP BX
+          POP AX
+          RET
 
           end
