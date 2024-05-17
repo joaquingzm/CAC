@@ -10,7 +10,10 @@ bnez r2, loop
 halt
 ;El programa calcula 2^6
 ;No entiendo por que sucede un atasco RAW en bnez r2,loop etapa ID y
-;por qué espera a resultado de instrucción anterior post etapa Mem
+;por qué espera a resultado de instrucción anterior post etapa Mem.
+;RTA:
+;Lo que sucede es que la instruccion bnez r2,loop decide en etapa de ID si
+;el salto se realiza o no, es por eso que espera a que se ejecute EX.
 
 ;Atasco Branch Taken: Por segmentación de cauce antes de que el 
 ;procesador pueda llegar a la conclusion de un salto de línea
