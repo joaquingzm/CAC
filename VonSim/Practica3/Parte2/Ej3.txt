@@ -1,0 +1,100 @@
+          PIO EQU 30H
+          PIC EQU 20H
+          DIM_INPUT EQU 10
+          POS_GESTOR_F10 EQU 4
+
+          ORG 16
+          DW GESTOR_F10
+
+          ORG 1000H
+          F10 DB 0
+          STRING DB "PRESIONE F10 PARA COMENZAR"
+          DB 10
+          INPUT DB ?
+
+          ORG 2000H
+          CLI
+
+          CALL INICIAR_PIO
+          MOV CL,DIM_INPUT
+          MOV AL,POS_GESTOR_F10
+          OUT PIC+4,AL
+          MOV AL,0FEH
+          OUT PIC+1,AL
+          MOV BX,OFFSET INPUT
+          PUSH BX
+          MOV BX,OFFSET STRING
+          MOV AL,OFFSET INPUT - OFFSET STRING
+          INT 7
+
+          STI
+
+          
+    LAZO: CMP F10,0FFH
+          JNZ LAZO
+          CALL IMPRIMIR_INPUT
+
+
+          HLT
+          
+          ORG 3000H
+IMPRIMIR_INPUT:
+          PUSH AX
+          PUSH BX
+          PUSH CX
+          PUSH DX
+
+FOR_PIO1: MOV AL,[BX]
+          OUT PIO+1,AL
+          MOV AL,0
+          OUT PIO,AL
+          MOV AL,2
+          OUT PIO,AL
+          IN AL,PIO
+FOR_PIO2: AND AL,00000001B
+          JNZ FOR_PIO2
+          INC BX
+          DEC CL
+          JNZ FOR_PIO1
+          
+          POP DX
+          POP CX
+          POP BX
+          POP AX
+          RET
+          
+GESTOR_F10:
+          PUSH AX
+          PUSH BX
+          PUSH CX
+          PUSH DX
+
+  FOR_F10:INT 6
+          INC BX
+          DEC CL
+          JNZ FOR_F10
+          MOV F10,0FFH
+          
+          POP DX
+          POP CX
+          POP BX
+          POP AX
+          IRET
+          
+INICIAR_PIO:
+          PUSH AX
+          PUSH BX
+          PUSH CX
+          PUSH DX
+
+          MOV AL,11111101B
+          OUT PIO+2,AL
+          MOV AL,0
+          OUT PIO+3,AL
+          
+          POP DX
+          POP CX
+          POP BX
+          POP AX
+          RET
+          END
