@@ -18,6 +18,10 @@
 ;DUDA: QUE SUCEDE SI EN LUGAR DE NOP PONGO J FIN? ENTIENDO QUE DEBERIA ROMPERSE EL CODIGO PERO NO SUCEDE. AL MOMENTO
 ;DE EJECUTARSE J FIN YA SE EJECUTÓ LA INSTRUCCIÓN DE SALTO ANTERIOR Y LA SOBREESCRIBE?
 
+;RTA: No recomendable, en la pratica la instruccion
+;siguiente al salto aparece antes de la instruccion
+;de salto y podrian pasar cosas que no quiero
+
 ;a)Tener activado el Delay Slot hace que el salto se ejecute después de la siguiente instrucción a la instrucción de salto 
 
 ;b)Se incluye la instrucción nop porque sino la instrucción que se ejectuaría antes del salto sería halt y terminaría

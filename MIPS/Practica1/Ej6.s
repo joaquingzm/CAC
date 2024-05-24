@@ -24,3 +24,6 @@ daddi $t0,$t0,8
 ;No se me ocurre si hacerlo para solo 3 valores o generalizarlo. Si lo hago para 3 valores
 ;como deberia hacer las comparaciones y condiciones? Porque al principio necesito sumar 2 y 
 ;despues 1.
+
+;RTA: Hacerlo con 3 comparaciones,A==B,A==C,B==C,y sumar cada vez que la igualdad es verdadera
+;si al final de las comparaciones el cont==1, entonces cont=2 y listo

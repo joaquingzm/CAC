@@ -2,6 +2,11 @@
 ;Sin Nop: 26 Ciclos,18 Instrucciones,1.44 CPI,4 Atascos RAW
 ;Con Nop: 26 Ciclos,22 Instrucciones,1,182 CPI,0 Atascos RAW
 ;DUDA: POR QUÉ PONIENDO LA INSTRUCCIÓN NOP EL CPI MEJORA?
+
+;RTA: Cuando hay un atasco, no lo cuenta como instruccion
+;y por lo tanto no lo cuenta para el calculo del CPI
+;el NOP sí cuenta
+
 .data
 x: .word 3
 y: .word 2

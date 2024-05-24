@@ -17,7 +17,8 @@ dsub $t3,$t2,$t0        ;Resto valores de ambos caracteres para saber si son igu
 bnez $t3,seguir         ;Si no lo son sigo recorriendo hasta llegar a 0
 daddi $t4,$t4,1         ;Si sí lo son, sumo 1 al reg contador
 seguir:
-daddi $t1,$t1,8          ;Avanzo al siguiente elemento
+daddi $t1,$t1,1          ;Avanzo al siguiente elemento
 bnez $t2,loop           ;Si el valor del caracter leido es distinto de 0, sigo recorriendo
 sd $t4,cant($0)         ;Guardo registro contador en cant
 halt
+
