@@ -13,6 +13,10 @@
 ;se realiza en STR porque el forwarding ya le paso el valor de
 ;f3 y por alguna razón lo necesita por más que no lo use
 
+;RTA: Hablando con el profe, me dijo que busque por internet
+;una imagen de la arquitectura de un procesador mips y siga
+;paso a paso las etapas a ver si entiendo qué sentido tiene el WAR
+;(él tampoco entendió)
 .data
 n1: .double 9.13
 n2: .double 6.58
@@ -22,6 +26,7 @@ res2: .double 0.0
 l.d f1, n1(r0)
 l.d f2, n2(r0)
 add.d f3, f2, f1
+mul.d f1, f2, f1
 mul.d f4, f2, f1
 s.d f3, res1(r0)
 s.d f4, res2(r0)
@@ -30,4 +35,14 @@ halt
 ;a)16 Ciclos,7 Instrucciones,2,286 CPI
 ;Atascos: 4 RAW,2 Estructurales(Str)
 
-;b)Los atascos RAW suceden por que la suma de números
+;b)Los atascos RAW suceden por que la suma de números flotantes
+;tarda tanto que cuando se necesita el resultado se tiene que quedar esperando
+
+;c) Suceden cuando 2 instrucciones quieren acceder a la misma etapa
+
+;
+
+
+
+
+
