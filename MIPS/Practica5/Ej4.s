@@ -1,6 +1,3 @@
-;DUDA: No logro que las instrucciones c.lt.d y bc1t funcionen
-;el for no corta
-
 
 
 .data
@@ -20,7 +17,7 @@ dadd $t2,$0,$0
 div.d f3,f1,f2
 
 for:
-l.d f4,tabla($t0)
+l.d f4,tabla($t2)
 daddi $t0,$t0,1
 daddi $t1,$t1,-1
 daddi $t2,$t2,8
