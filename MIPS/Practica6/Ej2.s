@@ -1,5 +1,5 @@
 ;DUDA: En la 2da pasada el valor del registro $ra pasa a valer "muestra" y queda en loop, no sé por qué sucede
-
+;RTA: WinMips falla y crea el loop
 
 .data   
 cero:           .asciiz "CERO"
